@@ -1,0 +1,31 @@
+[Unit]
+Description=Oggy Reels Bot
+After=network.target postgresql.service redis.service
+Wants=postgresql.service redis.service
+
+[Service]
+Type=exec
+User=oggy
+Group=oggy
+WorkingDirectory=/opt/oggy-reels-bot
+EnvironmentFile=/opt/oggy-reels-bot/.env
+ExecStart=/opt/oggy-reels-bot/.venv/bin/python -m src.main
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=oggy-reels-bot
+
+# Resource limits
+MemoryLimit=2G
+CPUQuota=200%
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/oggy-reels-bot/data /opt/oggy-reels-bot/logs /opt/oggy-reels-bot/temp
+
+[Install]
+WantedBy=multi-user.target
